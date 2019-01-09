@@ -17,9 +17,9 @@ extern "C" {
 int main(int ac, char** av) {
     std::cout << "Start" << std::endl;
     std::ifstream input;
-    input.open("/Users/CL10060-N/Downloads/haha.yuv",  std::ios::in | std::ios_base::binary);
+    input.open("/path/to/test.yuv",  std::ios::in | std::ios_base::binary);
     std::ofstream file;
-    file.open("/Users/CL10060-N/Downloads/main.mp4",  std::ios::out | std::ios_base::binary);
+    file.open("/path/to/test.mp4",  std::ios::out | std::ios_base::binary);
     AVCodec *codec;
     AVFrame *frame;
     AVCodecContext *context;
