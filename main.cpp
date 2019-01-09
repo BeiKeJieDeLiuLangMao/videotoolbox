@@ -92,7 +92,7 @@ int main(int ac, char** av) {
     }
     frame->pts = 0;
 
-    while(true) {
+    for(int i = 0; i < 100; i++) {
         uint8_t* y = (uint8_t *)av_malloc(478 * 850);
         input.read((char *)(y), 478 * 850);
         frame->data[0] = y;

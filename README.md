@@ -4,3 +4,6 @@ FFmpeg work correctly:
 
 test.yuv each frame format yuv420:   
 <Y 478 * 850 bytes> <U 478 * 850 / 4 bytes> <V 478 * 850 / 4 bytes> ...
+
+Attention：  
+You need change input file path and output path
