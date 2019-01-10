@@ -93,34 +93,33 @@ int main(int ac, char** av) {
     frame->pts = 0;
 
     for(int i = 0; i < 100; i++) {
-        uint8_t* y = (uint8_t *)av_malloc(478 * 850);
-        input.read((char *)(y), 478 * 850);
-        frame->data[0] = y;
-        frame->linesize[0] = 478;
+        uint8_t* data = (uint8_t *)av_malloc(478 * 850 * 3 / 2);
+        input.read((char *)(data), 478 * 850 * 3 / 2);
+        frame->data[0] = (uint8_t *)av_malloc(frame->linesize[0] * 850);
         //file.write((char*)buffer->DataY(), buffer->width() * buffer->height());
         //std::cout << "Y" << frame->linesize[kYPlaneIndex] << std::endl;
-        uint8_t* u = (uint8_t *)av_malloc(478 * 850 / 4);
-        input.read((char *)(u), 478 * 850 / 4);
-        frame->data[1] = u;
-        frame->linesize[1] = 239;
+        frame->data[1] = (uint8_t *)av_malloc(frame->linesize[1] * 850);
         //file.write((char*)buffer->DataU(), buffer->width() * buffer->height() * 1 / 4);
         //std::cout << "U" << frame->linesize[kUPlaneIndex] << std::endl;
-        uint8_t* v = (uint8_t *)av_malloc(478 * 850 / 4);
-        input.read((char *)(v), 478 * 850 / 4);
-        frame->data[2] = v;
-        frame->linesize[2] = 239;
-        std::cout << "Read Finished" << std::endl;
+        frame->data[2] = (uint8_t *)av_malloc(frame->linesize[2] * 850);
+        for (int j = 0 ; j < 850; j ++) {
+            memcpy(frame->data[0] + j * frame->linesize[0], data + 478 * j, 478);
+        }
+        for (int j = 0 ; j < 850; j ++) {
+            memcpy(frame->data[1] + j * frame->linesize[1], data + 478 * 850 + 239 * j, 239);
+        }
+        for (int j = 0 ; j < 850; j ++) {
+            memcpy(frame->data[2] + j * frame->linesize[2], data + 478 * 850 * 5 / 4 + 239 * j, 239);
+        }
         // Encode!
         int enc_ret;
         enc_ret = avcodec_send_frame(context, frame);
         if (enc_ret != 0) {
             return -1;
         }
-        std::cout << "Send Finished" << std::endl;
         frame->pts++;
         while (enc_ret >= 0) {
             enc_ret = avcodec_receive_packet(context, &pkt);
-            std::cout << "Receive Finished" << std::endl;
             if (enc_ret == AVERROR(EAGAIN) || enc_ret == AVERROR_EOF) {
                 break;
             } else if (enc_ret < 0) {
