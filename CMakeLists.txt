@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(videotoolbox)
 
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "-pthread")
-
+set(CMAKE_CXX_FLAGS "-pthread -lz -ldl -lfdk-aac")
 
 include(./CMakeModules/FindFFMPEG.cmake)
 add_executable(videotoolbox main.cpp)
