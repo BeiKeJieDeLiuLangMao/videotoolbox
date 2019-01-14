@@ -23,7 +23,7 @@ int main(int ac, char** av) {
     AVCodec *codec;
     AVFrame *frame;
     AVCodecContext *context;
-    AVPacket pkt;
+    AVPacket *pkt;
     int ret;
     /* find the mpeg1 video encoder */
     codec = avcodec_find_encoder_by_name("h264_videotoolbox");
@@ -90,6 +90,14 @@ int main(int ac, char** av) {
         std::cout << "5" << std::endl;
         return -1;
     }
+
+    pkt = av_packet_alloc();
+    if (!pkt) {
+        std::cout << "6" << std::endl;
+        return -1;
+    }
+
+
     frame->pts = 0;
 
     for(int i = 0; i < 100; i++) {
@@ -119,15 +127,15 @@ int main(int ac, char** av) {
         }
         frame->pts++;
         while (enc_ret >= 0) {
-            enc_ret = avcodec_receive_packet(context, &pkt);
+            enc_ret = avcodec_receive_packet(context, pkt);
             if (enc_ret == AVERROR(EAGAIN) || enc_ret == AVERROR_EOF) {
                 break;
             } else if (enc_ret < 0) {
                 return -1;
             }
 
-            file.write((char*)pkt.data, pkt.size);
-            av_packet_unref(&pkt);
+            file.write((char*)pkt->data, pkt->size);
+            av_packet_unref(pkt);
 
         }
 
